@@ -1,0 +1,14 @@
+# すべてのファイルを一旦無視する
+**/**
+
+# 必要なファイルだけを許可（!を付ける）
+!appsscript.json
+!**/*.js
+!**/*.html
+
+# Google側には不要なファイルを無視（Git関連や設定ファイル）
+.git/**
+.gitignore
+.clasp.json
+.claspignore
+README.md
