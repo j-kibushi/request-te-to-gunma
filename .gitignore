@@ -1,0 +1,13 @@
+# claspの設定ファイル（スクリプトIDが含まれるため、秘匿したい場合は含める）
+.clasp.json
+
+# 認証情報が含まれるファイル（もし生成されている場合）
+.clasp-auth.json
+creds.json
+
+# OSが自動生成する一時ファイル
+.DS_Store
+Thumbs.db
+
+# Node.js関連（もし今後npmなどを使う場合）
+node_modules/
