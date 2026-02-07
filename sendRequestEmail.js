@@ -69,14 +69,43 @@ https://docs.google.com/spreadsheets/d/1B7WqcJitpAv34qip8t6sOMBPK0sdvtHdBs7z54TB
       return;
   }
 
+  // 担当営業（G列）の情報を取得してCCを設定
+  let ccRecipient = "";
+  try {
+    // 営業担当者はE列（5列目）。e.rangeから直接取得
+    const sheet = e.range.getSheet();
+    const row = e.range.getRow();
+    const salesRepName = sheet.getRange(row, 5).getValue();
+
+    if (salesRepName) {
+      const salesMasterSsId = "104S53Ag64cg-dfcgfC3V_dO8LlP9auFA_XRBAaE-GwY";
+      const salesMasterSheet = SpreadsheetApp.openById(salesMasterSsId).getSheetByName("セールスマスタ");
+      const data = salesMasterSheet.getDataRange().getValues();
+      
+      // セールスマスタから氏名(A列)が一致する行のメールアドレス(B列)を検索
+      const targetRow = data.find(r => r[0] === salesRepName);
+      if (targetRow && targetRow[1]) {
+        ccRecipient = targetRow[1];
+      }
+    }
+  } catch (err) {
+    console.warn(`担当営業のメールアドレス取得に失敗しました。エラー: ${err.toString()}`);
+  }
+
   // メールを送信します。
   try {
-    MailApp.sendEmail({
+    const emailOptions = {
       to: RECIPIENT,
       subject: mailSubject,
       body: mailBody
-    });
-    console.log(`メールが正常に送信されました。宛先: ${RECIPIENT}, 件名: ${mailSubject}`);
+    };
+
+    if (ccRecipient) {
+      emailOptions.cc = ccRecipient;
+    }
+
+    MailApp.sendEmail(emailOptions);
+    console.log(`メールが正常に送信されました。宛先: ${RECIPIENT}, CC: ${ccRecipient}, 件名: ${mailSubject}`);
   } catch (error) {
     console.error(`メールの送信に失敗しました。エラー: ${error.toString()}`);
   }
